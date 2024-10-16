@@ -1,0 +1,12 @@
+.idea/
+
+# Exclude build files
+/riscv32/build/*.elf
+/riscv32/build/*.s
+/compliance/build/*.elf
+/compliance/build/*.s
+/verifier/build/*.elf
+/verifier/build/*.s
+/.vscode
+
+.DS_Store

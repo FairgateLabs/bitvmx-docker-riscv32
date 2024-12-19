@@ -33,10 +33,10 @@ if [ "$2" == "--with-mul" ]; then
     march="rv32im"
 else
     extra_files="/src/mulsi3.c /src/div.S"
+    # Generate assembly for mulsi3.c
+    $CC -march=$march -mabi=ilp32 -S /src/mulsi3.c -o /src/mulsi3.s
 fi
 
-# Generate assembly for mulsi3.c
-$CC -march=$march -mabi=ilp32 -S /src/mulsi3.c -o /src/mulsi3.s
 
 # Link the necessary files into an ELF executable
 $CC -march=$march -mabi=ilp32 -nostdlib -T linker/link.ld $extra_files /data/src/entrypoint.s "$input_file" -o "riscv32/build/${base_name}.elf"

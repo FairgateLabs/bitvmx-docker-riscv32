@@ -1,10 +1,28 @@
-FROM archlinux:latest
+FROM ubuntu:jammy-20240405
 
-# Install dependencies
-RUN pacman -Syu --noconfirm \
-    && pacman -S --noconfirm base-devel git sudo vim
+RUN apt-get -y update
+RUN apt-get upgrade --yes 
+RUN apt-get -y install git \ 
+    autoconf=2.71-2 \
+    automake=1:1.16.5-1.3 \
+    autotools-dev=20220109.1 \
+    curl \
+    libmpc-dev=1.2.1-2build1  \
+    libmpfr-dev=4.1.0-3build3 \
+    libgmp-dev=2:6.2.1+dfsg-3ubuntu1 \
+    gawk=1:5.1.0-1ubuntu0.1 \
+    build-essential=12.9ubuntu3 \
+    bison=2:3.8.2+dfsg-1build1 \
+    flex=2.6.4-8build2 \
+    texinfo=6.8-4build1 \
+    gperf=3.1-1build1 \
+    libtool=2.4.6-15build2 \
+    patchutils=0.4.2-1build2  \
+    bc=1.07.1-3build1 \
+    zlib1g-dev=1:1.2.11.dfsg-2ubuntu9.2  \
+    libexpat-dev
 
-RUN pacman -Syu --noconfirm autoconf automake curl python3 libmpc mpfr gmp gawk base-devel bison flex texinfo gperf libtool patchutils bc zlib expat libslirp
+RUN git config --global http.sslverify false
 
 RUN mkdir /src && \
   cd /src && \
@@ -14,22 +32,17 @@ RUN cd /src/riscv-gnu-toolchain/ && \
   ./configure --prefix=/riscv32 --with-arch=rv32im --with-abi=ilp32 && \
   make -j 8 
 
-#get some files to compile multiplication and division for riscv32
-RUN cd /src && curl -LJO https://github.com/gcc-mirror/gcc/raw/master/libgcc/config/epiphany/mulsi3.c \
-            && curl -LJO https://github.com/gcc-mirror/gcc/raw/master/libgcc/config/riscv/riscv-asm.h \ 
-            && curl -LJO https://github.com/gcc-mirror/gcc/raw/master/libgcc/config/riscv/div.S 
 
+#qemu reqs
+RUN apt-get -y install dos2unix python3 pkg-config libglib2.0-dev libpixman-1-dev vim python3-pip ninja-build
+RUN pip install tomli
 
-# Define a build argument (default to false)
-ARG INSTALL_QEMU=true
-
-# Update the package manager and optionally install qemu-full based on the argument
-RUN pacman -Sy --noconfirm && \
-    if [ "$INSTALL_QEMU" = "true" ]; then \
-        pacman -S --noconfirm qemu-full; \
-    fi
-
-RUN pacman -Sy --noconfirm dos2unix
+RUN cd /src && \
+  git clone https://git.qemu.org/git/qemu.git && \
+  cd qemu && \
+  ./configure --prefix=/riscv32 --static --disable-system --target-list=riscv32-linux-user && \
+  make -j 8 && \
+  make install
 
 ENV PATH=/riscv32/bin:$PATH
 

@@ -4,17 +4,26 @@ cd /data
 
 # Check if the input file argument is provided
 if [ -z "$1" ]; then
-    echo "Usage: $0 <input_filename> [--with-mul]"
+    echo "Usage: $0 <input_filename> [--output output_dir] [--with-mul] [--no-qemu]"
     exit 1
 fi
 
 # Initialize default architecture
 march="rv32i"
 
+echo "Building $1 $2 $3 $4"
+
 # Check if the --with-mul argument is provided
-if [ "$2" == "--with-mul" ]; then
+if [ "$2" == "--with-mul" ] || [ "$4" == "--with-mul" ]; then
     march="rv32im"
 fi
+
+output_dir=""
+if [ "$2" == "--output" ]; then
+    output_dir=$3
+fi
+
+
 
 
 # Extract the input file name without extension
@@ -25,11 +34,11 @@ base_name=$(basename "$input_file" .c)
 echo "Building $input_file with $march architecture"
 
 # Generate assembly from the input file
-$CC -march=$march -mabi=ilp32 -S "$input_file" -o "riscv32/build/${base_name}.s"
+$CC -march=$march -mabi=ilp32 -S "$input_file" -o "riscv32/build/${output_dir}/${base_name}.s"
 
 extra_files=""
 # Check if the --with-mul argument is provided
-if [ "$2" == "--with-mul" ]; then
+if [ "$2" == "--with-mul" ] || [ "$4" == "--with-mul" ]; then
     march="rv32im"
 else
     extra_files="/src/mulsi3.c /src/div.S"
@@ -39,8 +48,21 @@ fi
 
 
 # Link the necessary files into an ELF executable
-$CC -march=$march -mabi=ilp32 -nostdlib -T linker/link.ld $extra_files /data/src/entrypoint.s "$input_file" -o "riscv32/build/${base_name}.elf"
+$CC -march=$march -mabi=ilp32 -nostdlib -T linker/link.ld $extra_files /data/src/entrypoint.s "$input_file" -o "riscv32/build/${output_dir}/${base_name}.elf"
 
 # Run the ELF with QEMU
-$QEMU -d in_asm -D "riscv32/build/${base_name}_trace.s" "riscv32/build/${base_name}.elf"
+skip_qemu=false
+for arg in "$@"; do
+    if [ "$arg" == "--no-qemu" ]; then
+        skip_qemu=true
+        break
+    fi
+done
+
+# Run the ELF with QEMU
+if [ "$skip_qemu" == true ]; then
+    echo "Skipping QEMU"
+else
+    $QEMU -d in_asm -D "riscv32/build/${output_dir}/${base_name}_trace.s" "riscv32/build/${output_dir}/${base_name}.elf"
+fi
 

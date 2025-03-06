@@ -28,11 +28,6 @@ SECTIONS
         . = ALIGN(4);
     }
     
-    .registers 0xF0000000 : ALIGN(4) {
-        *(.registers)
-        . = ALIGN(4);
-    }
-    
     .rodata 0xB0000000 : ALIGN(4) {
         *(.rodata) 
         . = ALIGN(4);

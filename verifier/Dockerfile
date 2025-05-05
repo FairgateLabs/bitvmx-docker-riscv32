@@ -2,6 +2,8 @@ FROM riscv32:latest
 
 WORKDIR /
 
+RUN apt-get -y update
+RUN apt-get upgrade --yes 
 RUN apt-get -y install clang 
 
 RUN cd /src && \ 

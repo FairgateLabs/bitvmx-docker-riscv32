@@ -10,3 +10,4 @@
 /.vscode
 
 .DS_Store
+/riscv32/build/exceptions/*.s

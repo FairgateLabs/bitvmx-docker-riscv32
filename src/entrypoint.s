@@ -31,5 +31,3 @@ _stack_start:
 .section .input, "aw", @nobits
 .skip 0x2000
 
-.section .registers, "aw", @nobits
-.skip 0x200

@@ -11,3 +11,4 @@
 
 .DS_Store
 /riscv32/build/exceptions/*.s
+/riscv32/build/audit/*.s

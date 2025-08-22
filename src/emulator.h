@@ -1,6 +1,6 @@
 #include <stddef.h>
 #define INPUT_ADDRESS 0xAA000000
-#define INPUT_SIZE 0x1000
+#define INPUT_SIZE 0x2000
 
 #define STDOOUT_ADDRESS 0xA0001000
 

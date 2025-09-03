@@ -1,8 +1,8 @@
 #include <stdint.h>
 
 const uint32_t payload[] = {
-    0x05d00893, // a7,zero,93
-    0x00000073  // ecall
+    0x9308D005, // a7,zero,93
+    0x73000000  // ecall
 };
 int main()
 {

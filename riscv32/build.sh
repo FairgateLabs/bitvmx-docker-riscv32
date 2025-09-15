@@ -63,6 +63,6 @@ done
 if [ "$skip_qemu" == true ]; then
     echo "Skipping QEMU"
 else
-    $QEMU -d in_asm -D "riscv32/build/${output_dir}/${base_name}_trace.s" "riscv32/build/${output_dir}/${base_name}.elf"
+    $QEMU -cpu rv32,c=false -d in_asm -D "riscv32/build/${output_dir}/${base_name}_trace.s" "riscv32/build/${output_dir}/${base_name}.elf"
 fi
 

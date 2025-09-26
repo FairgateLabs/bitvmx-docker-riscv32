@@ -4,14 +4,14 @@ cd /data
 
 # Check if the input file argument is provided
 if [ -z "$1" ]; then
-    echo "Usage: $0 <input_filename> [--output output_dir] [--with-mul] [--no-qemu]"
+    echo "Usage: $0 <input_filename> [--output output_dir] [--with-mul] [--optimized] [--with-stdlib] [--no-qemu]"
     exit 1
 fi
 
 # Initialize default architecture
 march="rv32i"
 
-echo "Building $1 $2 $3 $4"
+echo "Building ${@:1}"
 
 # Check if the --with-mul argument is provided
 if [ "$2" == "--with-mul" ] || [ "$4" == "--with-mul" ]; then
@@ -46,9 +46,21 @@ else
     $CC -march=$march -mabi=ilp32 -S /src/mulsi3.c -o /src/mulsi3.s
 fi
 
+optimization="-O0"
+stdlib="-nostdlib"
+
+for arg in "$@"; do
+    if [ "$arg" == "--optimized" ]; then
+        optimization="-O3"
+    fi
+
+    if [ "$arg" == "--with-stdlib" ]; then
+        stdlib="-static -nostartfiles"
+    fi
+done
 
 # Link the necessary files into an ELF executable
-$CC -march=$march -mabi=ilp32 -nostdlib -T linker/link.ld $extra_files /data/src/entrypoint.s "$input_file" -o "riscv32/build/${output_dir}/${base_name}.elf"
+$CC -march=$march $optimization -mabi=ilp32 $stdlib -T linker/link.ld $extra_files /data/src/entrypoint.s "$input_file" -o "riscv32/build/${output_dir}/${base_name}.elf"
 
 # Run the ELF with QEMU
 skip_qemu=false

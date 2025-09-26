@@ -55,3 +55,5 @@ The `.c` file needs to include at least this part:
 ```
 
 And the file needs to be linked using `linkd.ld` file which describes the memory sections of the files and using `entrypoint.s` which defines the real entrypoint and calls main.
+
+You can also add `--optimization` so that it compiles with `-O3` and `--with-stdlib` for including statically the stdlib in the binary, but it is not fully tested and will error if using unimplemented syscalls.

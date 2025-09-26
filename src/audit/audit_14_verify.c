@@ -9,11 +9,13 @@ __attribute__((naked, aligned(8))) int test_switch(int x)
         "nop\n\t"
 
         // Embedded lookup table (must be at known offset)
+        // with random opcodes so that the emulator does not complain 
+        // about invalid opcodes in .text section
         ".Ldata:\n\t"
-        ".word 100\n\t" // [0] = 100
-        ".word 200\n\t" // [4] = 200
-        ".word 300\n\t" // [8] = 300
-        ".word 400\n\t" // [12] = 400
+        ".word 0x00300293\n\t" // [0]
+        ".word 0x00a2ee63\n\t" // [4]
+        ".word 0x00000317\n\t" // [8]
+        ".word 0xfe830313\n\t" // [12]
 
         ".Lcode_start:\n\t"
         // Bounds check

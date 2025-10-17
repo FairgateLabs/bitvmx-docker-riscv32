@@ -55,3 +55,16 @@ The `.c` file needs to include at least this part:
 ```
 
 And the file needs to be linked using `linkd.ld` file which describes the memory sections of the files and using `entrypoint.s` which defines the real entrypoint and calls main.
+
+## License
+
+This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+## 🧩 Part of the BitVMX Ecosystem
+
+This repository is a component of the **BitVMX Ecosystem**, an open platform for disputable computation secured by Bitcoin.  
+You can find the index of all BitVMX open-source components at [**FairgateLabs/BitVMX**](https://github.com/FairgateLabs/BitVMX).
+
+---

@@ -5,7 +5,7 @@ rm obj/*.o
 rm mcl/obj/*.o
 rm mcl/lib/*
 
-cp /data/verifier/constants.h /src/bitvmx-zk-verifier/groth16-verifier/constants.h
+#cp /data/verifier/constants.h /src/bitvmx-zk-verifier/groth16-verifier/constants.h
 cp /data/linker/link.ld /src/bitvmx-zk-verifier/linkers/link.ld
 cp /data/src/entrypoint.s /src/bitvmx-zk-verifier/start.S
 
